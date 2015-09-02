@@ -19,6 +19,7 @@ public class CreditCardListActivity extends Activity {
     private static final String TAG = "CoinCCList";
     private static final String PREF_LAST_REFRESH = "last_refresh";
     private static final String PREF_NAME = "CoinPrefs";
+    private static final String CREDIT_CARD_SERVER = "https://s3.amazonaws.com/mobile.coin.vc/ios/assignment/data.json";
 
     private CreditCardAdapter ccAdapter;
 
@@ -160,9 +161,8 @@ public class CreditCardListActivity extends Activity {
      * downloads the list of cards and saves it.
      */
     private void downloadAndStoreCreditCards() {
-        String url = getString(R.string.credit_card_server);
         Context applicationContext = getApplicationContext();
-        String responseFile = Downloader.downloadString(url, applicationContext);
+        String responseFile = Downloader.downloadString(CREDIT_CARD_SERVER, applicationContext);
         //Dump all rows in the db before adding new ones.
         getContentResolver().delete(CreditCardProvider.CONTENT_URI, "_id is not null", null);
         JsonUtils.parseAndSaveJson(responseFile, applicationContext);
