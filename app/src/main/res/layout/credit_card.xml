@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    android:background="@null"
+    android:layout_gravity="bottom"
+    android:gravity="bottom">
+
+    <ImageView
+        android:id="@+id/cardBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:src="@drawable/card_background"/>
+
+    <TextView
+        android:id="@+id/goodThrough"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:textSize="5sp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:text="@string/goodthrough"
+        android:paddingStart="45dp"
+        android:paddingEnd="5dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="42dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:text="01 / 17"
+        android:id="@+id/expirationDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:singleLine="true"
+        android:paddingBottom="40dp"
+        android:layout_toEndOf="@id/goodThrough"
+        android:layout_alignParentBottom="true"
+        android:textStyle="bold" />
+
+    <TextView
+        android:text="ALLISON LOUIE"
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:gravity="start"
+        android:paddingStart="45dp"
+        android:paddingEnd="40dp"
+        android:paddingBottom="13sp"
+        android:singleLine="true"
+        android:layout_above="@id/expirationDate"
+        android:textStyle="bold" />
+
+    <TextView
+        android:text="3713   438735   71002"
+        android:id="@+id/cardNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:paddingBottom="18dp"
+        android:singleLine="true"
+        android:layout_above="@+id/name"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>
