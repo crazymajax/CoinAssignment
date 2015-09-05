@@ -1,6 +1,5 @@
 package com.dermu.coinassignment;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.JsonReader;
@@ -12,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
+ * A utility class that can parse the json reply of the API into credit cards
  * Created by Francois on 9/1/2015.
  */
 public class JsonUtils {
@@ -68,7 +68,11 @@ public class JsonUtils {
         reader.endObject();
     }
 
-    private static CreditCard readOneCard(JsonReader reader)  throws IOException {
+    private static CreditCard readOneCard(JsonReader reader) throws IOException {
+        if (reader == null || !reader.hasNext()) {
+            return null;
+        }
+
         boolean enabled = false;
         String firstName = "";
         String lastName = "";
@@ -124,7 +128,9 @@ public class JsonUtils {
     }
 
     private static void insertInCardDb(CreditCard cc, Context ctx) {
-        ContentValues values = cc.getContentValues();
-        ctx.getContentResolver().insert(CreditCardProvider.CONTENT_URI, values);
+        if (cc == null || ctx == null) {
+            return;
+        }
+        ctx.getContentResolver().insert(CreditCardProvider.CONTENT_URI, cc.getContentValues());
     }
 }

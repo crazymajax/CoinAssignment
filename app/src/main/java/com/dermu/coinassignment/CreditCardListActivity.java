@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -22,7 +21,8 @@ public class CreditCardListActivity extends ActionBarActivity {
     private static final String TAG = "CoinCCList";
     private static final String PREF_LAST_REFRESH = "last_refresh";
     private static final String PREF_NAME = "CoinPrefs";
-    private static final String CREDIT_CARD_SERVER = "https://s3.amazonaws.com/mobile.coin.vc/ios/assignment/data.json";
+    private static final String CREDIT_CARD_SERVER
+            = "https://s3.amazonaws.com/mobile.coin.vc/ios/assignment/data.json";
 
     private CreditCardAdapter ccAdapter;
 
@@ -79,16 +79,16 @@ public class CreditCardListActivity extends ActionBarActivity {
                         CreditCardProvider.EXPIRATION,
                         CreditCardProvider.BG_IMAGE
                 },
-                null,
+                null, //CreditCardProvider._ID + " is null", // <-- to test with nothing in the DB
                 null,
                 CreditCardProvider.CREATION_DATE + " DESC"));
 
         ListView cardList = (ListView) findViewById(R.id.cardlist);
         if (cardList != null) {
             cardList.setAdapter(ccAdapter);
+            cardList.setEmptyView(findViewById(R.id.emptyListText));
         }
 
-        //TODO: add special handling for empty lists
         //TODO: add unit tests
     }
 
@@ -112,7 +112,8 @@ public class CreditCardListActivity extends ActionBarActivity {
         } else {
             //for lower api versions.
             View decorView = getWindow().getDecorView();
-            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                          | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             decorView.setSystemUiVisibility(uiOptions);
         }
     }
@@ -162,7 +163,6 @@ public class CreditCardListActivity extends ActionBarActivity {
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 hideProgress();
-                refreshContentIfNew();
             }
         };
         bgdownloader.execute();
@@ -192,15 +192,5 @@ public class CreditCardListActivity extends ActionBarActivity {
         //Dump all rows in the db before adding new ones.
         getContentResolver().delete(CreditCardProvider.CONTENT_URI, "_id is not null", null);
         JsonUtils.parseAndSaveJson(responseFile, applicationContext);
-        refreshContentIfNew();
-    }
-
-    private void refreshContentIfNew() {
-        //This actually doesn't need to do anything because the adapter has a listener on dataset change
-
-        //TODO: Handle empty lists !
-        //TODO: Add a special mechanism to cache the credit card bg.
-        // always downloadString them in case they changed but only downloadString them once per sync.
-        // if the next card bg is the same don't downloadString again.
     }
 }
