@@ -93,6 +93,13 @@ public class JsonUtils {
                 cardNumber = cardNumber.replace(" ", "\u0020\u0020\u0020");
             } else if (EXPIRATION.equals(name)) {
                 expirationDate = reader.nextString();
+                String[] date = expirationDate.split("/");
+                if (date.length == 2 && date[1].length() == 4) {
+                    date[1] = date[1].substring(2,4);
+                    expirationDate = TextUtils.join("\u0020/\u0020", date);
+                } else {
+                    expirationDate = expirationDate.replace("/", "\u0020/\u0020");
+                }
             } else if (FIRST_NAME.equals(name)) {
                 firstName = reader.nextString();
             } else if (LAST_NAME.equals(name)) {
