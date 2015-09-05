@@ -7,6 +7,10 @@
     tools:context=".CreditCardList"
     android:background="#2e405a">
 
+    <com.dermu.coinassignment.GradientView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ListView
         android:id="@+id/cardlist"
         android:layout_width="match_parent"

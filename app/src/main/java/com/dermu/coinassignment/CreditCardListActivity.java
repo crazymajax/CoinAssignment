@@ -86,11 +86,10 @@ public class CreditCardListActivity extends ActionBarActivity {
         ListView cardList = (ListView) findViewById(R.id.cardlist);
         if (cardList != null) {
             cardList.setAdapter(ccAdapter);
-//            cardList.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN); //FIXME
         }
 
-        //TODO: change expiration date from "03/2016" to "03 / 16"
-        //TODO: add the custom bg with gradient
+        //TODO: add special handling for empty lists
+        //TODO: add unit tests
     }
 
     private Drawable resize(Drawable image) {
