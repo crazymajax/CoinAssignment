@@ -1,8 +1,7 @@
 package com.dermu.coinassignment;
 
-import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -66,19 +65,7 @@ public class CreditCardListActivity extends ActionBarActivity {
         }
 
         //Hide the TSB (BACK, HOME, RECENT)
-//        getWindow().
-//                getDecorView().
-//                setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-//        getWindow()
-//                .getDecorView()
-//                .setSystemUiVisibility(
-//                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-////                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-//                // remove the following flag for version < API 19
-////                        | View.SYSTEM_UI_FLAG_IMMERSIVE
-//                );
+        HideNavbar();
 
         ccAdapter = new CreditCardAdapter(getApplicationContext(), getContentResolver().query(
                 CreditCardProvider.CONTENT_URI,
@@ -100,13 +87,22 @@ public class CreditCardListActivity extends ActionBarActivity {
 //            cardList.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN); //FIXME
         }
 
-        //TODO: remove the list item separator line
-        //TODO: remove the list item padding
         //TODO: place the logo in the actionBar properly
         //TODO: add the custom bg with gradient
         //TODO: change expiration date from "03/2016" to "03 / 16"
         //TODO: add more spaces in the card number too !
-        //TODO: hide the TSB !
+    }
+
+    public void HideNavbar() {
+        if(Build.VERSION.SDK_INT < 19) { //19 or above api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else {
+            //for lower api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
 
     @Override
