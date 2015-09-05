@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 
-public class CreditCardListActivity extends Activity {
+public class CreditCardListActivity extends ActionBarActivity {
     private static final String TAG = "CoinCCList";
     private static final String PREF_LAST_REFRESH = "last_refresh";
     private static final String PREF_NAME = "CoinPrefs";
@@ -49,22 +49,38 @@ public class CreditCardListActivity extends Activity {
     // ####################### Life Cycle ###################################################
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        supportRequestWindowFeature(Window.FEATURE_LEFT_ICON); //FIXME
+
         super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_LEFT_ICON|Window.FEATURE_ACTION_BAR); //FIXME
 
         setContentView(R.layout.activity_credit_card_list);
         setTitle("");
-//        ActionBar actionBar = getSupportActionBar();
-//        Log.d(TAG, "actionBar is " + actionBar);
-//        if (actionBar != null) {
-////            actionBar.setIcon(R.drawable.ic_launcher);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+//            actionBar.setIcon(R.drawable.ic_launcher);
 //            actionBar.setLogo(R.drawable.ic_launcher);
 //            actionBar.setDisplayUseLogoEnabled(true);
-//            actionBar.setDisplayShowHomeEnabled(true);
-////            actionBar.setDisplayShowTitleEnabled(true);
-//        }
+            actionBar.setDisplayShowHomeEnabled(true);
+//            actionBar.setHomeButtonEnabled(false);
+//            actionBar.setDisplayShowTitleEnabled(true);
+        }
 
-        Cursor cursor = getContentResolver().query(
+        //Hide the TSB (BACK, HOME, RECENT)
+//        getWindow().
+//                getDecorView().
+//                setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+//        getWindow()
+//                .getDecorView()
+//                .setSystemUiVisibility(
+//                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+////                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+//                // remove the following flag for version < API 19
+////                        | View.SYSTEM_UI_FLAG_IMMERSIVE
+//                );
+
+        ccAdapter = new CreditCardAdapter(getApplicationContext(), getContentResolver().query(
                 CreditCardProvider.CONTENT_URI,
                 new String[]{
                         CreditCardProvider._ID,
@@ -76,9 +92,7 @@ public class CreditCardListActivity extends Activity {
                 },
                 null,
                 null,
-                CreditCardProvider.CREATION_DATE + " DESC");
-
-        ccAdapter = new CreditCardAdapter(getApplicationContext(), cursor);
+                CreditCardProvider.CREATION_DATE + " DESC"));
 
         ListView cardList = (ListView) findViewById(R.id.cardlist);
         if (cardList != null) {
@@ -86,7 +100,6 @@ public class CreditCardListActivity extends Activity {
 //            cardList.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN); //FIXME
         }
 
-        //TODO: figure out why there are so many duplicates !!!
         //TODO: remove the list item separator line
         //TODO: remove the list item padding
         //TODO: place the logo in the actionBar properly
@@ -94,13 +107,18 @@ public class CreditCardListActivity extends Activity {
         //TODO: change expiration date from "03/2016" to "03 / 16"
         //TODO: add more spaces in the card number too !
         //TODO: hide the TSB !
-        //TODO: Enforce no rotation !
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         refreshIfNeeded();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ccAdapter.getCursor().close();
     }
 
     // ####################### methods ###################################################
