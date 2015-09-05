@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Coin Assignment</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Hi coin !</string>
     <string name="refreshing">\u0020 Refreshing…</string>
     <string name="goodthrough">GOOD\nTHRU</string>
     <string name="emptyListText">No credit cards</string>
+    <string name="action_credits_1">Made by</string>
+    <string name="action_credits_2">Francois Dermu</string>
 </resources>
