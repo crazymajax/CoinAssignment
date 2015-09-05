@@ -3,6 +3,7 @@ package com.dermu.coinassignment;
 import android.content.ContentValues;
 
 /**
+ * An object that holds all the info of a credit card.
  * Created by Francois on 9/1/2015.
  */
 public class CreditCard {
@@ -31,6 +32,10 @@ public class CreditCard {
         this.bg_image = bg_image;
     }
 
+    /**
+     * Converts all the info into a contentValue object for easy insert in the DB.
+     * @return the key value pair equivalent to the info of this credit card.
+     */
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(CreditCardProvider.ENABLED, enabled);

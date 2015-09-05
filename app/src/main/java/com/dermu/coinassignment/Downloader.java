@@ -13,6 +13,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,22 +28,18 @@ import java.io.OutputStream;
  * Created by Francois on 8/31/2015.
  */
 public class Downloader {
-
     private static final String TAG = "CoinDownloader";
-
     public static final String STORAGE_FILE_NAME = "credit_cards.json";
 
     /**
      * @param url the url of the request you want to make
      * @param ctx the appContext
-     * @return the string returned by the server for the given request URL
+     * @return the path to the file where the value returned by the server for the given
+     * request URL is stored
      */
     public static String downloadString(String url, Context ctx) {
-//        String responseString = "";
-
         if (TextUtils.isEmpty(url)) {
             Log.e(TAG, "Unable to downloadString from an invalid url: " + url);
-//            return responseString;
             return null;
         }
 
@@ -61,23 +58,19 @@ public class Downloader {
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 try {
-                    if (status.getStatusCode() == HttpStatus.SC_OK) {
-                        //TODO: Check if this is necessary:
+                    int statusCode = status.getStatusCode();
+                    if (statusCode == HttpStatus.SC_OK) {
                         File dir = ctx.getFilesDir();
                         File file = new File(dir, STORAGE_FILE_NAME);
                         if (file.exists()) {
-                            file.delete();
+                            if (!file.delete()) {
+                                Log.w(TAG, "Unable to erase previous file !");
+                            }
                         }
-                        //Or if this will erase and overwrite everything.
-                        FileOutputStream out = ctx.openFileOutput(STORAGE_FILE_NAME, Context.MODE_PRIVATE);
-//                        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+                        FileOutputStream out = ctx.openFileOutput(STORAGE_FILE_NAME,
+                                                                  Context.MODE_PRIVATE);
                         try {
-//                            entity.writeTo(out2);
-//                            Log.v(TAG, "Response from the cloud for downloadString was: " + out2.toString());
                             entity.writeTo(out);
-//                            //At scale this would need to go in a file but how many credit
-//                            // cards can a user have ? Probably not that many...
-//                            responseString = out.toString();
                         } catch (IOException e) {
                             Log.e(TAG, "Unable to write downloaded data to output: " + out);
                             e.printStackTrace();
@@ -89,18 +82,17 @@ public class Downloader {
                                 e.printStackTrace();
                             }
                         }
+                    } else {
+                        Log.w(TAG, "Response from server was unsuccessful."
+                                + " code: " + statusCode
+                                + " response: " + EntityUtils.toString(entity));
                     }
                 } catch (FileNotFoundException e) {
                     Log.e(TAG, "Unable to get storage file: " + STORAGE_FILE_NAME);
                     e.printStackTrace();
-//                } finally {
-//                    try {
-//                        InputStream content = entity.getContent();
-//                        content.close();
-//                    } catch (IOException e) {
-//                        Log.e(TAG, "Unable to get content from entity.");
-//                        e.printStackTrace();
-//                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "Unable to read the entity response: " + entity);
+                    e.printStackTrace();
                 }
             } else {
                 Log.e(TAG, "Unable to get a valid entity from the response.");
@@ -108,8 +100,6 @@ public class Downloader {
         }
         return STORAGE_FILE_NAME;
     }
-
-
 
     /**
      * @param url the url of the request you want to make
@@ -120,7 +110,6 @@ public class Downloader {
 
         if (TextUtils.isEmpty(url)) {
             Log.e(TAG, "Unable to download from an invalid url: " + url);
-//            return responseString;
             return null;
         }
 
@@ -143,11 +132,13 @@ public class Downloader {
                     inputStream = entity.getContent();
                     bitmap = BitmapFactory.decodeStream(inputStream);
                 } catch (IOException e) {
-                    Log.e(TAG, "Unable to write downloaded bitmap: " + inputStream);
+                    Log.e(TAG, "Unable to write downloaded bitmap: inputStream is null");
                     e.printStackTrace();
                 } finally {
                     try {
-                        inputStream.close();
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
                     } catch (IOException e) {
                         Log.e(TAG, "Unable to get content from entity.");
                         e.printStackTrace();

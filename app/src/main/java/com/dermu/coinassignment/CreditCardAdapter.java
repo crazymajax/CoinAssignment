@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 /**
+ * The list adapter that will return all the credit card info from the DB
  * Created by Francois on 8/31/2015.
  */
 public class CreditCardAdapter extends CursorAdapter {
@@ -42,7 +43,7 @@ public class CreditCardAdapter extends CursorAdapter {
         firstNameColIndex = c.getColumnIndex(CreditCardProvider.FIRST_NAME);
         lastNameColIndex  = c.getColumnIndex(CreditCardProvider.LAST_NAME);
         expiDateColIndex  = c.getColumnIndex(CreditCardProvider.EXPIRATION);
-        bgImageColIndex  = c.getColumnIndex(CreditCardProvider.BG_IMAGE);
+        bgImageColIndex   = c.getColumnIndex(CreditCardProvider.BG_IMAGE);
 
         defaultBg = BitmapFactory.decodeResource(
                 context.getResources(),
@@ -91,6 +92,17 @@ public class CreditCardAdapter extends CursorAdapter {
         this.notifyDataSetChanged();
     }
 
+    /**
+     * This utility function will take care of setting the image to the default background,
+     * downloading the image form the web, if necessary, caching it in memory in case other
+     * list items need it, and refresh the view with the final image after the download completes.
+     * If the image is already in cache the default image will not be used and the final image is
+     * applied right away.
+     * @param bgImageUrl the URL of the image to get
+     * @param view the view to set the image in
+     * @return the default image if the URL has never been downloaded before.
+     * The correct image in bitmap format otherwise.
+     */
     private Bitmap getBitmapFor(String bgImageUrl, View view) {
         Bitmap image;
         synchronized (cardBgs) {
@@ -142,6 +154,10 @@ public class CreditCardAdapter extends CursorAdapter {
         return image;
     }
 
+    /**
+     * Utility object used to pass an image with its downloading URL, bitmap and associated view
+     * back and forth between methods.
+     */
     private class ImageToRefresh {
         public String imageUrl;
         public View view;

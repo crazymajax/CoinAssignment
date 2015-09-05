@@ -1,6 +1,7 @@
 package com.dermu.coinassignment;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,7 @@ public class CreditCardListActivity extends ActionBarActivity {
     private static final String PREF_NAME = "CoinPrefs";
     private static final String CREDIT_CARD_SERVER
             = "https://s3.amazonaws.com/mobile.coin.vc/ios/assignment/data.json";
+            // change this to invalid URL to test failed downloads
 
     private CreditCardAdapter ccAdapter;
 
@@ -69,19 +71,25 @@ public class CreditCardListActivity extends ActionBarActivity {
         //Hide the TSB (BACK, HOME, RECENT)
         HideNavbar();
 
-        ccAdapter = new CreditCardAdapter(getApplicationContext(), getContentResolver().query(
-                CreditCardProvider.CONTENT_URI,
-                new String[]{
-                        CreditCardProvider._ID,
-                        CreditCardProvider.CARD_NUMBER,
-                        CreditCardProvider.FIRST_NAME,
-                        CreditCardProvider.LAST_NAME,
-                        CreditCardProvider.EXPIRATION,
-                        CreditCardProvider.BG_IMAGE
-                },
-                null, //CreditCardProvider._ID + " is null", // <-- to test with nothing in the DB
-                null,
-                CreditCardProvider.CREATION_DATE + " DESC"));
+        Cursor cursor = null;
+        try {
+            cursor = getContentResolver().query( // this cursor will get closed in onDestroy()
+                    CreditCardProvider.CONTENT_URI,
+                    new String[]{
+                            CreditCardProvider._ID,
+                            CreditCardProvider.CARD_NUMBER,
+                            CreditCardProvider.FIRST_NAME,
+                            CreditCardProvider.LAST_NAME,
+                            CreditCardProvider.EXPIRATION,
+                            CreditCardProvider.BG_IMAGE
+                    },
+                    null, //CreditCardProvider._ID + " is null", // to test with nothing in the DB
+                    null,
+                    CreditCardProvider.CREATION_DATE + " DESC");
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to create DB cursor !");
+        }
+        ccAdapter = new CreditCardAdapter(getApplicationContext(), cursor);
 
         ListView cardList = (ListView) findViewById(R.id.cardlist);
         if (cardList != null) {
@@ -101,8 +109,7 @@ public class CreditCardListActivity extends ActionBarActivity {
 
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     public void HideNavbar() {
@@ -127,7 +134,12 @@ public class CreditCardListActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ccAdapter.getCursor().close();
+        if ( ccAdapter != null) {
+            Cursor cursor = ccAdapter.getCursor();
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     // ####################### methods ###################################################

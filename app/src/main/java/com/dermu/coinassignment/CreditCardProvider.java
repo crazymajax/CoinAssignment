@@ -15,6 +15,7 @@ import android.util.Log;
 import java.util.HashMap;
 
 /**
+ * The content provider used for the credit card database.
  * Created by Francois on 8/31/2015.
  */
 public class CreditCardProvider extends ContentProvider {
@@ -27,7 +28,6 @@ public class CreditCardProvider extends ContentProvider {
     public static final int uriCode = 1;
 
     private static HashMap<String, String> values;
-
     public static final UriMatcher uriMatcher;
 
     static {
@@ -75,7 +75,8 @@ public class CreditCardProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         queryBuilder.setTables(TABLE_NAME);
         switch (uriMatcher.match(uri)) {
@@ -86,7 +87,8 @@ public class CreditCardProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
-        Cursor cursor = queryBuilder.query(sqlDB, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor cursor = queryBuilder.query(sqlDB, projection, selection,
+                                            selectionArgs, null, null, sortOrder);
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
@@ -117,7 +119,7 @@ public class CreditCardProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        int rowsDeleted = 0;
+        int rowsDeleted;
         switch (uriMatcher.match(uri)) {
             case uriCode:
                 rowsDeleted = sqlDB.delete(TABLE_NAME, selection, selectionArgs);

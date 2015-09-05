@@ -32,7 +32,6 @@ public class JsonUtils {
     public static void parseAndSaveJson(String responseFile, Context ctx) {
         if (TextUtils.isEmpty(responseFile)) {
             Log.v(TAG, "The list of credit cards is empty.");
-            //TODO: see if this is a valid use-case and if we need to empty the list in that case.
             return;
         }
 
