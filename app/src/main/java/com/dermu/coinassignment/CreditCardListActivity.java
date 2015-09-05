@@ -2,16 +2,15 @@ package com.dermu.coinassignment;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v7.app.ActionBar;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.ListView;
 
 public class CreditCardListActivity extends ActionBarActivity {
@@ -48,21 +47,27 @@ public class CreditCardListActivity extends ActionBarActivity {
     // ####################### Life Cycle ###################################################
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        supportRequestWindowFeature(Window.FEATURE_LEFT_ICON); //FIXME
+//        supportRequestWindowFeature(Window.FEATURE_LEFT_ICON); //FIXME
+//        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_credit_card_list);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         setTitle("");
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
 //            actionBar.setIcon(R.drawable.ic_launcher);
 //            actionBar.setLogo(R.drawable.ic_launcher);
 //            actionBar.setDisplayUseLogoEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-//            actionBar.setHomeButtonEnabled(false);
-//            actionBar.setDisplayShowTitleEnabled(true);
-        }
+//            actionBar.setDisplayShowHomeEnabled(true);
+////            actionBar.setHideOnContentScrollEnabled(true);
+////            actionBar.setHomeButtonEnabled(false);
+////            actionBar.setDisplayShowTitleEnabled(true);
+//        }
 
         //Hide the TSB (BACK, HOME, RECENT)
         HideNavbar();
