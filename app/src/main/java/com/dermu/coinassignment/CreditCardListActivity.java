@@ -1,12 +1,17 @@
 package com.dermu.coinassignment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,27 +52,19 @@ public class CreditCardListActivity extends ActionBarActivity {
     // ####################### Life Cycle ###################################################
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        supportRequestWindowFeature(Window.FEATURE_LEFT_ICON); //FIXME
-//        supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_credit_card_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        //Initialize the actionBar with the right icon and text.
         setTitle("");
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) {
-//            actionBar.setIcon(R.drawable.ic_launcher);
-//            actionBar.setLogo(R.drawable.ic_launcher);
-//            actionBar.setDisplayUseLogoEnabled(true);
-//            actionBar.setDisplayShowHomeEnabled(true);
-////            actionBar.setHideOnContentScrollEnabled(true);
-////            actionBar.setHomeButtonEnabled(false);
-////            actionBar.setDisplayShowTitleEnabled(true);
-//        }
+        ActionBar actionBar = getSupportActionBar();
+        Drawable icon = getResources().getDrawable(R.drawable.ic_launcher);
+        if (actionBar != null && icon != null) {
+            icon = resize(icon);
+            actionBar.setIcon(icon);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
 
         //Hide the TSB (BACK, HOME, RECENT)
         HideNavbar();
@@ -92,10 +89,22 @@ public class CreditCardListActivity extends ActionBarActivity {
 //            cardList.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN); //FIXME
         }
 
-        //TODO: place the logo in the actionBar properly
         //TODO: add the custom bg with gradient
         //TODO: change expiration date from "03/2016" to "03 / 16"
         //TODO: add more spaces in the card number too !
+    }
+
+    private Drawable resize(Drawable image) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        int px = dpToPx(45); // 45dp into pixel value
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, px, px, false);
+        return new BitmapDrawable(getResources(), bitmapResized);
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
     }
 
     public void HideNavbar() {
