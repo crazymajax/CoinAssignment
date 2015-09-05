@@ -90,6 +90,7 @@ public class JsonUtils {
             }
             if (CARD_NUMBER.equals(name)) {
                 cardNumber = reader.nextString();
+                cardNumber = cardNumber.replace(" ", "\u0020\u0020\u0020");
             } else if (EXPIRATION.equals(name)) {
                 expirationDate = reader.nextString();
             } else if (FIRST_NAME.equals(name)) {

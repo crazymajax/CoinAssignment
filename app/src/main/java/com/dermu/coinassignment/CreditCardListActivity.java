@@ -89,9 +89,8 @@ public class CreditCardListActivity extends ActionBarActivity {
 //            cardList.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN); //FIXME
         }
 
-        //TODO: add the custom bg with gradient
         //TODO: change expiration date from "03/2016" to "03 / 16"
-        //TODO: add more spaces in the card number too !
+        //TODO: add the custom bg with gradient
     }
 
     private Drawable resize(Drawable image) {
